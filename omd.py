@@ -16,7 +16,6 @@ def step1():
     while option not in options:
         print('Выберите: {}/{}'.format(*options))
         option = input()
-    
     if options[option]:
         return step2_umbrella()
     return step2_no_umbrella()
