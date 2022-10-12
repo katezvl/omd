@@ -5,8 +5,6 @@ corpus = [
 
 
 class CountVectorizer:
-    def __init__(self):
-        self._vocabulary = {}
 
     @staticmethod
     def get_feature_names(phrases):
