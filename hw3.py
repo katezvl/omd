@@ -1,55 +1,35 @@
-corpus = [
-    'Crock Pot Pasta Never boil pasta again',
-    'Pasta Pomodoro Fresh ingredients Parmesan to taste'
-]
-
-
 class CountVectorizer:
 
-    @staticmethod
-    def get_feature_names(phrases):
-        lowered = []
-        for string in phrases:
-            a = string.lower().split()
-            lowered.extend(a)
-        unique_words = []
-        for element in lowered:
-            if element not in unique_words:
-                unique_words.append(element)
-        return unique_words
+    def __init__(self):
+        self.dict_to_count = {}
 
-    @staticmethod
-    def fit_transform(phrases):
-        list_of_dicts = []
+    def get_feature_names(self):
+        return list(self.dict_to_count)
+
+    def fit_transform(self, phrases):
         unique_words = []
         for phrase in phrases:
-            dict_to_count = dict()
-            lowered = []
-            for string in phrases:
-                a = string.lower().split()
-                lowered.extend(a)
-            for element in lowered:
+            for element in phrase.lower().split():
                 if element not in unique_words:
                     unique_words.append(element)
             for word in unique_words:
-                if word not in dict_to_count:
-                    dict_to_count[word] = 0
-            list_of_dicts.append(dict_to_count)
-        for num, phrase in enumerate(phrases):
-            words = phrase.lower().split()
-            for word in words:
-                if word in list_of_dicts[num]:
-                    list_of_dicts[num][word] += 1
-        matrix = []
-        for element in list_of_dicts:
-            count = []
-            for word in unique_words:
-                count.append(element[word])
-            matrix.append(count)
-        return matrix
+                if word not in self.dict_to_count:
+                    self.dict_to_count[word] = 0
+        count_matrix = []
+        for phrase in phrases:
+            for word in phrase.lower().split():
+                if word in self.dict_to_count:
+                    self.dict_to_count[word] += 1
+            count_matrix.append(list(self.dict_to_count.values()))
+            self.dict_to_count = {key: 0 for key in self.dict_to_count}
+        return count_matrix
 
 
 if __name__ == '__main__':
+    corpus = [
+        'Crock Pot Pasta Never boil pasta again',
+        'Pasta Pomodoro Fresh ingredients Parmesan to taste'
+    ]
     vectorizer = CountVectorizer()
     print(vectorizer.fit_transform(corpus))
-    print(vectorizer.get_feature_names(corpus))
+    print(vectorizer.get_feature_names())
