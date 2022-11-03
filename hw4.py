@@ -55,4 +55,4 @@ if __name__ == '__main__':
     }
     corgi_ad = Advert()
     corgi_ad.adder(corgi)
-
+    print(corgi_ad)
