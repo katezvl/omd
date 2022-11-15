@@ -3,35 +3,20 @@ from keyword import iskeyword
 
 
 class BaseAdvert:
-    repr_color_code = 33
 
     def __init__(self, ads):
         self.add_qualities(ads)
 
     def add_qualities(self, ads):
-        if 'price' not in ads:
-            ads['price'] = 0
         for key, value in ads.items():
             if iskeyword(key):
                 key = key + '_'
             setattr(self, key, value)
             if isinstance(value, dict):
-                setattr(self, 'location', BaseAdvert(ads['location']))
-            if key == 'price' and value < 0:
-                raise ValueError('must be >= 0')
+                setattr(self, key, BaseAdvert(value))
 
     def __repr__(self):
         return f'{self.title} | {self.price} ₽'
-
-    @property
-    def price(self):
-        return self._price
-
-    @price.setter
-    def price(self, value):
-        if value < 0:
-            raise ValueError('must be >=0')
-        self._price = value
 
 
 class ColourMixin:
@@ -43,7 +28,21 @@ class ColourMixin:
 
 
 class Advert(ColourMixin, BaseAdvert):
-    pass
+    def __init__(self, ads, *args, **kwargs):
+        self._price = None
+        if 'title' not in ads:
+            raise ValueError('title is required')
+        super().__init__(ads, *args, **kwargs)
+
+    @property
+    def price(self):
+        return self._price or 0
+
+    @price.setter
+    def price(self, value):
+        if value < 0:
+            raise ValueError('must be >=0')
+        self._price = value
 
 
 if __name__ == '__main__':
@@ -67,5 +66,5 @@ if __name__ == '__main__':
         }
     }
     corgi_ad = Advert(corgi)
-    corgi_ad.price = -1
-    print(corgi_ad.class_)
+    corgi_ad.price = 100
+    print(corgi_ad)
